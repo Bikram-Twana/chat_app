@@ -1,6 +1,6 @@
-import 'package:chat_app/views/pages/message_page.dart';
-import 'package:chat_app/views/pages/setting_page.dart';
-import 'package:chat_app/views/pages/user_list_page.dart';
+import 'package:chat_app/views/pages/NavBar/message_page.dart';
+import 'package:chat_app/views/pages/NavBar/setting_page.dart';
+import 'package:chat_app/views/pages/NavBar/user_list_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBarWidget extends StatefulWidget {
@@ -14,27 +14,28 @@ class BottomNavBarWidget extends StatefulWidget {
 
 class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
   int _selectedIndex = 1;
-  final pages = [
-    const UserListPage(),
-    const MessagePage(),
-    const SettingPage()
-  ];
+  final pages = [const UserListPage(), MessagePage(), const SettingPage()];
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_2_outlined),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message_rounded),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_accessibility_rounded),
-          )
-        ]);
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          elevation: 10.0,
+          unselectedItemColor: Colors.black87,
+          backgroundColor: Theme.of(context).primaryColorLight,
+          selectedIconTheme: IconThemeData(color: Colors.blue.shade600),
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_2_outlined), label: "1"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.message_rounded), label: "'2"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings_accessibility_rounded), label: "3")
+          ]),
+      body: pages[_selectedIndex],
+    );
   }
 
   void _onItemTapped(int index) {
