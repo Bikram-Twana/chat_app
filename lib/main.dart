@@ -1,4 +1,4 @@
-import 'package:chat_app/auth/on_boarding.dart';
+// import 'package:chat_app/auth/on_boarding.dart';
 import 'package:chat_app/models/providers/auth_provider.dart';
 import 'package:chat_app/models/providers/user_provider.dart';
 import 'package:chat_app/views/pages/home_page.dart';
@@ -21,10 +21,7 @@ class MyApp extends StatelessWidget {
           create: (_) => UserProvider(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomePage(),
-      ),
+      child: HomePage(),
     );
   }
 }

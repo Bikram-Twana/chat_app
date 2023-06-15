@@ -7,39 +7,31 @@ import 'package:flutter/material.dart';
 
 class MessagePage extends StatelessWidget {
   MessagePage({super.key});
-  // final tabPages = [MessageTab(), const GroupTab(), const CallsTab()];
   final blackText = TextStyle(color: Colors.black);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "All Chat",
-          style: blackText,
-        ),
+        title: Text("All Chat", style: blackText),
         actions: [
           Row(
             children: [
               IconButton(
                 color: Colors.black,
-                icon: Icon(
-                  Icons.search,
-                ),
+                icon: Icon(Icons.search),
                 onPressed: () {},
               ),
               IconButton(
                 color: Colors.black,
-                icon: Icon(Icons.verified_user_sharp),
+                icon: Icon(Icons.person_add_sharp),
                 onPressed: () {},
               ),
             ],
-          )
+          ),
         ],
         backgroundColor: Color(0xFFEDF0F6),
         bottom: TabBar(
-          // indicator: BoxDecoration(color: Colors.black),
-          // labelStyle: TextStyle(color: Colors.black, background: Paint()),
           tabs: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,12 +40,8 @@ class MessagePage extends StatelessWidget {
                 BlueDotWidget(),
               ],
             ),
-            Tab(
-              icon: Text("Group", style: blackText),
-            ),
-            Tab(
-              icon: Text("Calls", style: blackText),
-            )
+            Tab(icon: Text("Group", style: blackText)),
+            Tab(icon: Text("Calls", style: blackText))
           ],
         ),
       ),
