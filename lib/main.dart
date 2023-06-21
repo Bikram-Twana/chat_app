@@ -1,7 +1,7 @@
-// import 'package:chat_app/auth/on_boarding.dart';
+import 'package:chat_app/auth/on_boarding.dart';
 import 'package:chat_app/models/providers/auth_provider.dart';
+import 'package:chat_app/models/providers/chat_provider.dart';
 import 'package:chat_app/models/providers/user_provider.dart';
-import 'package:chat_app/views/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,11 +17,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(
-          create: (_) => UserProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
       ],
-      child: HomePage(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.light(),
+          home: OnBoarding()),
     );
   }
 }

@@ -1,20 +1,39 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/material.dart';
+
 import 'package:chat_app/views/pages/NavBar/message_page.dart';
 import 'package:chat_app/views/pages/NavBar/setting_page.dart';
 import 'package:chat_app/views/pages/NavBar/user_list_page.dart';
-import 'package:flutter/material.dart';
 
 class BottomNavBarWidget extends StatefulWidget {
-  const BottomNavBarWidget({super.key});
+  final String userEmail;
+  BottomNavBarWidget({
+    Key? key,
+    required this.userEmail,
+  }) : super(key: key);
 
   @override
   State<BottomNavBarWidget> createState() => _BottomNavBarWidgetState();
 }
 
 class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
+  // initState() {
+  //   super.initState();
+  //   MessagePage().setEmail = widget.userEmail;
+  // }
+  // get userEmail => widget.userEmail;
+
   int _selectedIndex = 1;
-  final pages = [const UserListPage(), MessagePage(), const SettingPage()];
+
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      const UserListPage(),
+      MessagePage(
+        userEmail: '${widget.userEmail}',
+      ),
+      const SettingPage()
+    ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,

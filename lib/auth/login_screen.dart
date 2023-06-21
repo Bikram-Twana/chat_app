@@ -4,6 +4,7 @@ import 'package:chat_app/models/providers/user_provider.dart';
 import 'package:chat_app/utils/colors/app_color.dart';
 import 'package:chat_app/utils/consts/text_form_field_styles.dart';
 import 'package:chat_app/utils/validators/login_register_validator.dart';
+import 'package:chat_app/views/pages/TabBar/message_tab.dart';
 import 'package:chat_app/views/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -146,14 +147,19 @@ class LoginScreen extends StatelessWidget {
                     List<Map<String, dynamic>> temp = await context
                         .read<UserProvider>()
                         .getUser(emailController.text, passwordController.text);
-                    if (emailController.text == temp[0]["email"]) {
+                    if (emailController.text == temp[0]["email"] &&
+                        passwordController.text == temp[0]["password"]) {
                       // ignore: use_build_context_synchronously
+
                       Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (_) => HomePage()),
+                          MaterialPageRoute(
+                              builder: (_) => HomePage(
+                                    userEmail: '${temp[0]["email"]}',
+                                  )),
                           (route) => false);
                     }
                   } catch (e) {
-                    throw e.toString();
+                    print("No User Registered");
                   }
                   // Overlay(
                   //   initialEntries: [

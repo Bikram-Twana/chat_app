@@ -1,11 +1,24 @@
-import 'package:chat_app/data/user_profile.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:chat_app/models/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chat_app/data/user_profile.dart';
+import 'package:chat_app/views/pages/ChattingModule/chatting_page.dart';
+import 'package:provider/provider.dart';
+
 class MessageTab extends StatelessWidget {
-  const MessageTab({super.key});
+  final String userEmail;
+
+  MessageTab({
+    Key? key,
+    required this.userEmail,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> allReceivingUsers =
+        Provider.of<UserProvider>(context, listen: false)
+            .getAllReceivingUserList(userEmail);
     final fullSize = MediaQuery.sizeOf(context);
     return Scaffold(
       body: Column(
@@ -65,11 +78,14 @@ class MessageTab extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return ListTile(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: allReceivingUsers.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: ListTile(
                     leading: CircleAvatar(backgroundColor: Colors.green),
-                    title: Text("MyName"),
+                    title: Text("${allReceivingUsers[index]["fullName"]}"),
                     subtitle: Text("This is a message"),
                     trailing: Column(
                       children: [
@@ -77,8 +93,22 @@ class MessageTab extends StatelessWidget {
                         Text("Typing..."),
                       ],
                     ),
-                  );
-                }),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChattingPage(
+                                  anotherUserFullName:
+                                      '${allReceivingUsers[index]["fullName"]}',
+                                  anotherUserName:
+                                      '${allReceivingUsers[index]["userName"]}',
+                                  loggedUserEmail: '$userEmail',
+                                )));
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
