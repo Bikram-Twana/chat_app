@@ -44,7 +44,7 @@ class MessageTab extends StatelessWidget {
                 ],
               ),
               Container(
-                width: fullSize.width - 65,
+                width: fullSize.width - 75,
                 height: 100.0,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -101,8 +101,8 @@ class MessageTab extends StatelessWidget {
                             builder: (context) => ChattingPage(
                                   anotherUserFullName:
                                       '${allReceivingUsers[index]["fullName"]}',
-                                  anotherUserName:
-                                      '${allReceivingUsers[index]["userName"]}',
+                                  anotherUserEmail:
+                                      '${allReceivingUsers[index]["email"]}',
                                   loggedUserEmail: '$userEmail',
                                 )));
                   },

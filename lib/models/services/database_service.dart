@@ -6,8 +6,8 @@ import 'package:path/path.dart';
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
   static Database? _database;
-  String dbName = 'chat_app.db';
-  String tableUser = 'TableUser';
+  String dbName = 'chat_app1.db';
+  String tableUser = 'UserTable';
   String tableChat = 'ChatTable';
   // String tableChatHistory = 'TableChatHistory';
   DatabaseService._init();
@@ -25,7 +25,7 @@ class DatabaseService {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, dbName);
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path, version: 2, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -40,7 +40,8 @@ class DatabaseService {
           userName $textType,
           fullName $textType,
           phoneNumber $textType,
-          password $textType
+          password $textType, 
+          images TEXT
         )
     ''';
 
@@ -48,11 +49,11 @@ class DatabaseService {
     String sql2 = '''
       CREATE TABLE $tableChat (
 	"id"	INTEGER UNIQUE,
-	"email"	TEXT NOT NULL,
-	"sender"	TEXT NOT NULL,
-	"receiver"	TEXT NOT NULL,
-	"message"	TEXT NOT NULL,
-	"date_time"	TEXT NOT NULL,
+	"senderEmail"	TEXT NOT NULL,
+	"receiverEmail"	TEXT NOT NULL,
+	"message"	TEXT,
+  "image" TEXT,
+	"datetime"	TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 )
 ''';
@@ -73,7 +74,7 @@ class DatabaseService {
           fullName: maps[index]['fullName'],
           phoneNumber: maps[index]['phoneNumber'],
           password: maps[index]['password'],
-          image: maps[index]['images']),
+          images: maps[index]['images']),
     ).toList();
   }
 
@@ -91,7 +92,7 @@ class DatabaseService {
       final db = await database;
 
       return db!.rawQuery(
-          'SELECT * FROM TableUser WHERE email=? and password=? limit 1;',
+          'SELECT * FROM UserTable WHERE email=? and password=? limit 1;',
           [email, password]);
       // db!
 
@@ -101,24 +102,24 @@ class DatabaseService {
     }
   }
 
-  // Add Profile Image To Users
-  Future<int> addProfileImage(String imagePath, String userEmail) async {
-    try {
-      final db = await database;
-      db!.rawQuery('ALTER TABLE $tableUser ADD image TEXT');
-      return db.rawUpdate(
-          'UPDATE userTable set images = $imagePath where email = $userEmail;');
-    } catch (e) {
-      throw e.toString();
-    }
-  }
+  // // Add Profile Image To Users
+  // Future<void> addProfileImage(String imagePath, String userEmail) async {
+  //   try {
+  //     final db = await database;
+  //     // db!.rawQuery('ALTER TABLE $tableUser ADD image TEXT');
+  //     db!.rawQuery(
+  //         'UPDATE userTable set image = $imagePath where email = $userEmail;');
+  //   } catch (e) {
+  //     throw e.toString();
+  //   }
+  // }
 
   //getting all receiving users in chat list
   Future<List<Map<String, dynamic>>> allReceivingUsers(
       String exceptEmail) async {
     try {
       final db = await database;
-      return db!
+      return await db!
           .rawQuery('SELECT * FROM $tableUser WHERE email !="$exceptEmail";');
     } catch (e) {
       throw ('No Receiving Users Found');
@@ -132,10 +133,10 @@ class DatabaseService {
     return List.generate(
       maps.length,
       (index) => ChatModel(
-          email: maps[index]['email'],
-          sender: maps[index]['sender'],
-          receiver: maps[index]['receiver'],
-          message: maps[index]['message'],
+          senderEmail: maps[index]['senderEmail'],
+          receiverEmail: maps[index]['receiverEmail'],
+          message: maps[index]['message'] ?? "",
+          image: maps[index]['image'] ?? "",
           datetime: maps[index]['datetime']),
     ).toList();
   }
@@ -148,48 +149,48 @@ class DatabaseService {
 
   // chats between two parties
   Future<List<Map<String, dynamic>>> getMessage(
-      String loggedUser, String otherUser) async {
+      String loggedUserEmail, String otherUserEmail) async {
     try {
       final db = await database;
       return db!.rawQuery(
-          'SELECT ct.id, ct.message, ct.email , ct.sender, ct.receiver, ct.date_time, ut.images FROM chatTable ct INNER JOIN userTable ut ON ct.email = ut.email WHERE ct.sender = "bikram" OR ct.receiver = "bikram";');
+          'SELECT tc.id, tc.message AS message, tc.image AS image, tc.senderEmail AS senderEmail, tc.receiverEmail, tc.datetime, tu.images FROM $tableChat tc INNER JOIN $tableUser tu ON tc.receiverEmail = tu.email WHERE (tc.senderEmail = "$loggedUserEmail" AND tc.receiverEmail  = "$otherUserEmail") OR (tc.receiverEmail = "$loggedUserEmail" AND tc.senderEmail = "$otherUserEmail") ORDER BY tc.datetime DESC;');
     } catch (e) {
       throw ("Error in getting chats");
     }
   }
 
-  // get usermodel from id
-  Future<List<Map<String, dynamic>>> getUserModelFromId(int id) async {
-    try {
-      final db = await database;
-      return db!
-          .rawQuery('SELECT * FROM $tableChat WHERE $tableChat.id = "id";');
-    } catch (e) {
-      throw ("No user");
-    }
-  }
+  // // get usermodel from id
+  // Future<List<Map<String, dynamic>>> getUserModelFromId(int id) async {
+  //   try {
+  //     final db = await database;
+  //     return db!
+  //         .rawQuery('SELECT * FROM $tableChat WHERE $tableChat.id = "id";');
+  //   } catch (e) {
+  //     throw ("No user");
+  //   }
+  // }
 
   // get singel chatmodel from email
   Future<List<Map<String, dynamic>>> getSingleChatModel(String email) async {
     try {
       final db = await database;
       return db!.rawQuery(
-          'SELECT * FROM $tableChat WHERE $tableChat.email = "email";');
+          'SELECT * FROM $tableChat WHERE $tableChat.receiverEmail = "email";');
     } catch (e) {
       throw ("No model found");
     }
   }
 
-  // Insert User to ChatList from registration username
-  Future<List<Map<String, dynamic>>> insertInChatList(String userName) async {
-    try {
-      final db = await database;
-      return db!.query(
-          'SELECT * FROM $tableChat ct INNER JOIN $tableUser ut ON ct.email = ut.email Where ct.id = "userName');
-    } catch (e) {
-      throw ("No id found");
-    }
-  }
+  // // Insert User to ChatList from registration username
+  // Future<List<Map<String, dynamic>>> insertInChatList(String userName) async {
+  //   try {
+  //     final db = await database;
+  //     return db!.query(
+  //         'SELECT * FROM $tableChat ct INNER JOIN $tableUser ut ON ct.receiverEmail = ut.email Where ut.userName = "$userName"');
+  //   } catch (e) {
+  //     throw ("No id found");
+  //   }
+  // }
 
   Future close() async {
     final db = await instance.database;

@@ -11,50 +11,33 @@ String chatModelToJson(List<ChatModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ChatModel {
-  final String email;
-  final String sender;
-  final String receiver;
-  final String message;
+  final String senderEmail;
+  final String receiverEmail;
+  String? message;
+  String? image;
   final String datetime;
 
   ChatModel({
-    required this.email,
-    required this.sender,
-    required this.receiver,
-    required this.message,
+    required this.senderEmail,
+    required this.receiverEmail,
+    this.message,
+    this.image,
     required this.datetime,
   });
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
-        email: json["email"],
-        sender: json["sender"],
-        receiver: json["receiver"],
+        senderEmail: json["senderEmail"],
+        receiverEmail: json["receiverEmail"],
         message: json["message"],
+        image: json["image"],
         datetime: json["datetime"],
       );
 
   Map<String, dynamic> toJson() => {
-        "email": email,
-        "sender": sender,
-        "receiver": receiver,
+        "senderEmail": senderEmail,
+        "receiverEmail": receiverEmail,
         "message": message,
+        "image": image,
         "datetime": datetime,
       };
 }
-
-// [
-//   {
-// "email" : "email", 
-// "sender" : "sender",
-// "receiver" : "receiver",
-// "message" : "message",
-// "datetime" : "datetime"
-// },
-// {
-// "email" : "email", 
-// "sender" : "sender",
-// "receiver" : "receiver",
-// "message" : "message",
-// "datetime" : "datetime"
-// }
-// ]
